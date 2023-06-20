@@ -15,16 +15,16 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
 const app = express();
 
 app.use(bodyParser.json());
-
-app.use(routes);
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '648fff99a4828d08b55f019e'
+    _id: '64915971907ee6ef2a7c828a',
   };
-
   next();
 }); 
+
+app.use(routes);
 
 app.listen(PORT, () => {
   console.log('Порт сервера 3000');

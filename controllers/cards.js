@@ -1,5 +1,6 @@
 const Card = require('../models/card');
 
+// Найти карточки
 const getCards = (req, res) => {
     return Card.find({})
         .then((cards) => {
@@ -7,52 +8,51 @@ const getCards = (req, res) => {
         })
 };
 
-const getCardById = (req, res) => {
-    const { id } = req.params;
-    return Card.findById(id)
-        .then((card) => {
-            return res.status(200).send(card);
-        })
-};
-
-//  Подружить карточки и БД
+// Создать карточку
 const createCard = (req, res) => {
     const { name, link } = req.body;
-    const owner = req.user._id;
-    return Card.create({ name, link, owner})
-        .then((newCard) => {
-            return res.status(201).send(newCard);
+    return Card.create({ name, link, owner: req.user._id })
+        .then((card) => {
+            return res.status(201).send({ data: card });
         })
 };
 
-// Лайк +
-const likeCard = (req, res) => Card.findByIdAndUpdate(
-    req.params.cardId,
-    // добавить _id в массив, если его там нет
-    { $addToSet: { likes: req.user._id } }, 
-    { new: true },
-  )
+// Поставить лайк
+const likeCard = (req, res) => {
+    return Card.findByIdAndUpdate(
+        req.params._id, 
+        { $addToSet: { likes: req.user._id } }, 
+        { new: true },
+    )
+    .then((card) => {
+        return res.status(200).send({ data: card });
+    })
+};
 
-// Лайк -
-const dislikeCard = (req, res) => Card.findByIdAndUpdate(
-    req.params.cardId,
-    // убрать _id из массива
-    { $pull: { likes: req.user._id } }, 
-    { new: true },
-  ) 
+// Убрать лайк
+const dislikeCard = (req, res) => {
+    return Card.findByIdAndUpdate(
+        req.params._id, 
+        { $pull: { likes: req.user._id } }, 
+        { new: true },
+    )
+    .then((card) => {
+        return res.status(200).send({ data: card });
+    })
+};
 
+// Удалить карточку
 const deleteCardById = (req, res) => {
-    const { id } = req.params;
-    return Card.findByIdAndDelete(id)
+    const cardId = req.params._id;
+    return Card.findByIdAndRemove(cardId)
         .then((card) => {
-            return res.status(200).send(card);
+            return res.status(200).send({ data: card });
         })
 };
 
 
 module.exports = {
     getCards,
-    getCardById,
     createCard,
     likeCard,
     dislikeCard,
