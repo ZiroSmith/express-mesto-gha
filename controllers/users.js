@@ -19,17 +19,17 @@ const getUsers = (req, res) => {
 // Найти пользователя
 const getUserById = (req, res) => {
     User.findById(req.params.id)
-        .orFail(new Error('NotValidId'))
+        .orFail(() => new Error('Not_Found'))
         .then((user) => {
             res.status(DONE_CODE).send(user);
         })
         .catch((err) => {
-            if (err.message === 'NotValidId') {
-                return res.status(BAD_REQUEST_CODE).send({message: "User Not Found"})
+            if (err.message === 'Not_Found') {
+                res.status(NOT_FOUND_CODE).send({ message: 'User Not Found' });
             } else {
-                res.status(GLOBAL_ERROR_SERVER).send({ message: "Server Error" })
+                res.status(GLOBAL_ERROR_SERVER).send({ message: 'Server Error' });
             }
-        })
+            });
 };
 
 // Создать пользователя
@@ -56,7 +56,7 @@ const updateUserById = (req, res) => {
     const { id } = req.params;
     User.findByIdAndUpdate(id, { name, about }, { new: true, runValidators: true })
       .orFail(() => new Error('Not_Found'))
-      .then((user) => res.status(DONE_CODE).send(user))
+      .then((user) => res.status(CREATE_CODE).send(user))
       .catch((err) => {
         if (err.name === 'ValidationError') {
           res.status(BAD_REQUEST_CODE).send({ message: 'Validation Error' });
