@@ -12,7 +12,5 @@ router.patch('/users/:id', updateUserById);
 
 router.patch('/users/:id/avatar', updateUserAvatarById);
 
-router.delete('/users/:id', deleteUserById);
-
 
 module.exports = router;
