@@ -27,7 +27,7 @@ const getUserById = (req, res) => {
             if (err.message === 'Not_Found') {
                 res.status(NOT_FOUND_CODE).send({ message: 'User Not Found' });
             } else {
-                res.status(GLOBAL_ERROR_SERVER).send({ message: 'Server Error' });
+                res.status(BAD_REQUEST_CODE).send({ message: 'Server Error' });
             }
             });
 };
