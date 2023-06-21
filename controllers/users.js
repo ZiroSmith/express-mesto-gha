@@ -25,7 +25,7 @@ const getUserById = (req, res) => {
         })
         .catch((err) => {
             if (err.message === 'NotValidId') {
-                return res.status(NOT_FOUND_CODE).send({message: "User Not Found"})
+                return res.status(BAD_REQUEST_CODE).send({message: "User Not Found"})
             } else {
                 res.status(GLOBAL_ERROR_SERVER).send({ message: "Server Error" })
             }
@@ -54,9 +54,9 @@ const createUser = (req, res) => {
 const updateUserById = (req, res) => {
     const { name, about } = req.body;
     const { id } = req.params;
-    User.findByIdAndUpdate(id, { name, about })
+    User.findByIdAndUpdate(id, { name, about }, { new: true, runValidators: true })
       .orFail(() => new Error('Not_Found'))
-      .then((user) => res.send(user))
+      .then((user) => res.status(DONE_CODE).send(user))
       .catch((err) => {
         if (err.name === 'ValidationError') {
           res.status(BAD_REQUEST_CODE).send({ message: 'Validation Error' });
@@ -74,7 +74,7 @@ const updateUserAvatarById = (req, res) => {
     const { id } = req.params;
     User.findByIdAndUpdate(id, { avatar }, { new: true, runValidators: true })
       .orFail(() => new Error('Not_Found'))
-      .then((user) => res.send(user))
+      .then((user) => res.status(DONE_CODE).send(user))
       .catch((err) => {
         if (err.name === 'ValidationError') {
           res.status(BAD_REQUEST_CODE).send({ message: 'Validation Error' });
