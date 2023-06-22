@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -22,7 +23,7 @@ app.use((req, res, next) => {
     _id: '6492ce0fd5bc9cc9fd839b6f',
   };
   next();
-}); 
+});
 
 app.use(routes);
 
