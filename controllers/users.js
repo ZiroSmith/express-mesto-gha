@@ -56,7 +56,7 @@ const updateUserById = (req, res) => {
     const { id } = req.params;
     User.findByIdAndUpdate(id, { name, about }, { new: true, runValidators: true })
       .orFail(() => new Error('Not_Found'))
-      .then((user) => res.status(CREATE_CODE).send(user))
+      .then((user) => res.status(DONE_CODE).send({ data: user }))
       .catch((err) => {
         if (err.name === 'ValidationError') {
           res.status(BAD_REQUEST_CODE).send({ message: 'Validation Error' });

@@ -49,7 +49,7 @@ const likeCard = (req, res) => {
         if (err.name === 'ValidationError') {
           res.status(BAD_REQUEST_CODE).send({ message: 'Validation Error' });
         } else if (err.message === 'Not_Found') {
-          res.status(BAD_REQUEST_CODE).send({ message: 'Card Not Found' });
+          res.status(NOT_FOUND_CODE).send({ message: 'Card Not Found' });
         } else {
           res.status(GLOBAL_ERROR_SERVER).send({ message: 'Server Error' });
         }
@@ -69,7 +69,7 @@ const dislikeCard = (req, res) => {
     })
     .catch((err) => {
         if (err.message === 'Not_Found') {
-          res.status(BAD_REQUEST_CODE).send({ message: 'Card Not Found' });
+          res.status(NOT_FOUND_CODE).send({ message: 'Card Not Found' });
         } else {
           res.status(GLOBAL_ERROR_SERVER).send({ message: 'Server Error' });
         }
@@ -86,7 +86,7 @@ const deleteCardById = (req, res) => {
         })
         .catch((err) => {
             if (err.message === 'Not_Found') {
-              res.status(BAD_REQUEST_CODE).send({ message: 'Card Not Found' });
+              res.status(NOT_FOUND_CODE).send({ message: 'Card Not Found' });
             } else {
               res.status(GLOBAL_ERROR_SERVER).send({ message: 'Server Error' });
             }
