@@ -24,7 +24,9 @@ const getUserById = (req, res) => {
             res.status(DONE_CODE).send(user);
         })
         .catch((err) => {
-            if (err.message === 'Not_Found') {
+            if (err.name === 'CastError') {
+              res.status(BAD_REQUEST_CODE).send({ message: 'Validation Error' });
+            } else if (err.message === 'Not_Found') {
                 res.status(NOT_FOUND_CODE).send({ message: 'User Not Found' });
             } else {
                 res.status(BAD_REQUEST_CODE).send({ message: 'Server Error' });
@@ -53,8 +55,7 @@ const createUser = (req, res) => {
 // Обновить данные пользователя
 const updateUserById = (req, res) => {
     const { name, about } = req.body;
-    const { id } = req.params;
-    User.findByIdAndUpdate(id, { name, about }, { new: true, runValidators: true })
+    User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
       .orFail(() => new Error('Not_Found'))
       .then((user) => res.status(DONE_CODE).send({ data: user }))
       .catch((err) => {
@@ -71,8 +72,7 @@ const updateUserById = (req, res) => {
 // Обновить аватар
 const updateUserAvatarById = (req, res) => {
     const { avatar } = req.body;
-    const { id } = req.params;
-    User.findByIdAndUpdate(id, { avatar }, { new: true, runValidators: true })
+    User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
       .orFail(() => new Error('Not_Found'))
       .then((user) => res.status(DONE_CODE).send(user))
       .catch((err) => {

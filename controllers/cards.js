@@ -46,7 +46,7 @@ const likeCard = (req, res) => {
         return res.status(DONE_CODE).send({ data: card });
     })
     .catch((err) => {
-        if (err.name === 'ValidationError') {
+        if (err.name === 'CastError') {
           res.status(BAD_REQUEST_CODE).send({ message: 'Validation Error' });
         } else if (err.message === 'Not_Found') {
           res.status(NOT_FOUND_CODE).send({ message: 'Card Not Found' });
@@ -68,7 +68,9 @@ const dislikeCard = (req, res) => {
         return res.status(DONE_CODE).send({ data: card });
     })
     .catch((err) => {
-        if (err.message === 'Not_Found') {
+        if (err.name === 'CastError') {
+            res.status(BAD_REQUEST_CODE).send({ message: 'Validation Error' });
+          } else if (err.message === 'Not_Found') {
           res.status(NOT_FOUND_CODE).send({ message: 'Card Not Found' });
         } else {
           res.status(GLOBAL_ERROR_SERVER).send({ message: 'Server Error' });
@@ -85,7 +87,9 @@ const deleteCardById = (req, res) => {
             return res.status(DONE_CODE).send({ data: card });
         })
         .catch((err) => {
-            if (err.message === 'Not_Found') {
+            if (err.name === 'CastError') {
+                res.status(BAD_REQUEST_CODE).send({ message: 'Validation Error' });
+              } else if (err.message === 'Not_Found') {
               res.status(NOT_FOUND_CODE).send({ message: 'Card Not Found' });
             } else {
               res.status(GLOBAL_ERROR_SERVER).send({ message: 'Server Error' });

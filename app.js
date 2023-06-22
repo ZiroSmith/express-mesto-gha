@@ -19,12 +19,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '64915971907ee6ef2a7c828a',
+    _id: '6492ce0fd5bc9cc9fd839b6f',
   };
   next();
 }); 
 
 app.use(routes);
+
+app.use((req, res) => {
+  res.status(404).send({ message: 'Incorrect' });
+});
 
 app.listen(PORT, () => {
   console.log('Порт сервера 3000');
