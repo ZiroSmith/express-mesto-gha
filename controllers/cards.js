@@ -1,8 +1,12 @@
 /* eslint-disable linebreak-style */
 const Card = require('../models/card');
-const {
-  DONE_CODE, CREATE_CODE, BAD_REQUEST_CODE, FORBIDDEN_CODE, NOT_FOUND_CODE, GLOBAL_ERROR_SERVER,
-} = require('../utils/constants');
+
+const DONE_CODE = 200;
+const CREATE_CODE = 201;
+const BAD_REQUEST_CODE = 400;
+const FORBIDDEN_CODE = 403;
+const NOT_FOUND_CODE = 404;
+const GLOBAL_ERROR_SERVER = 500;
 
 // Найти карточки
 const getCards = (req, res) => Card.find({})
