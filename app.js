@@ -3,6 +3,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const routes = require('./routes/index');
+const auth = require('./middlewares/auth');
+const { createUser, login } = require('./controllers/users');
 
 const { PORT = 3000 } = process.env;
 
@@ -18,18 +20,11 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '6492ce0fd5bc9cc9fd839b6f',
-  };
-  next();
-});
+app.post('/signup', createUser);
+app.post('/signin', login);
 
+app.use(auth);
 app.use(routes);
-
-app.use((req, res) => {
-  res.status(404).send({ message: 'Incorrect' });
-});
 
 app.listen(PORT, () => {
   console.log('Порт сервера 3000');

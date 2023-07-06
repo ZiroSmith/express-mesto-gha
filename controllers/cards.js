@@ -1,7 +1,7 @@
 /* eslint-disable linebreak-style */
 const Card = require('../models/card');
 const {
-  DONE_CODE, CREATE_CODE, BAD_REQUEST_CODE, NOT_FOUND_CODE, GLOBAL_ERROR_SERVER,
+  DONE_CODE, CREATE_CODE, BAD_REQUEST_CODE, FORBIDDEN_CODE, NOT_FOUND_CODE, GLOBAL_ERROR_SERVER,
 } = require('../utils/constants');
 
 // Найти карточки
@@ -64,7 +64,12 @@ const deleteCardById = (req, res) => {
   const cardId = req.params._id;
   return Card.findByIdAndRemove(cardId)
     .orFail(() => new Error('Not_Found'))
-    .then((card) => res.status(DONE_CODE).send({ data: card }))
+    .then((card) => {
+      if (card.owner.toString() !== req.user._id) {
+        res.status(FORBIDDEN_CODE).send({ message: 'Вы не вправе удалять эту карточку' });
+      }
+      res.status(DONE_CODE).send({ data: card });
+    })
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(BAD_REQUEST_CODE).send({ message: 'Validation Error' });
