@@ -11,7 +11,7 @@ router.post('/cards', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(3).max(29),
     // eslint-disable-next-line no-useless-escape
-    link: Joi.string().required().min(3).pattern(/^https?:\/\/(www\.)?[a-z0-9\.\-]+\/[a-z0-9\.\-_~:\/?#\[\]@!$&'()*+,;=]+/),
+    link: Joi.string().required().min(3).pattern(/^(http|https):\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,8}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/),
   }),
 }), createCard);
 

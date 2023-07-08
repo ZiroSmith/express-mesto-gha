@@ -22,6 +22,11 @@ router.patch('/users/me', celebrate({
   }),
 }), updateUserById);
 
-router.patch('/users/me/avatar', updateUserAvatarById);
+router.patch('/users/me/avatar', celebrate({
+  body: Joi.object().keys({
+    // eslint-disable-next-line no-useless-escape
+    avatar: Joi.string().required().pattern(/^(http|https):\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,8}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/),
+  }),
+}), updateUserAvatarById);
 
 module.exports = router;
