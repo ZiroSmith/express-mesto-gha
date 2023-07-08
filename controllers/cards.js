@@ -1,87 +1,87 @@
 /* eslint-disable linebreak-style */
 const Card = require('../models/card');
+const ValidationError = require('../errors/ValidationError');
+const NotFoundError = require('../errors/NotFoundError');
+const ForbiddenError = require('../errors/ForbiddenError');
 
 const DONE_CODE = 200;
 const CREATE_CODE = 201;
-const BAD_REQUEST_CODE = 400;
-const FORBIDDEN_CODE = 403;
-const NOT_FOUND_CODE = 404;
-const GLOBAL_ERROR_SERVER = 500;
 
 // Найти карточки
-const getCards = (req, res) => Card.find({})
+const getCards = (req, res, next) => Card.find({})
   .then((cards) => res.status(DONE_CODE).send(cards))
-  .catch(() => res.status(GLOBAL_ERROR_SERVER).send({ message: 'Server Error' }));
+  .catch(next);
 
 // Создать карточку
-const createCard = (req, res) => {
+const createCard = (req, res, next) => {
   const { name, link } = req.body;
   return Card.create({ name, link, owner: req.user._id })
     .then((card) => res.status(CREATE_CODE).send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(BAD_REQUEST_CODE).send({ message: 'Validation Error' });
-      } else {
-        res.status(GLOBAL_ERROR_SERVER).send({ message: 'Server Error' });
+        return next(new ValidationError('Необходимо заполнить все поля ввода'));
       }
+      return next(err);
     });
 };
 
 // Поставить лайк
-const likeCard = (req, res) => Card.findByIdAndUpdate(
+const likeCard = (req, res, next) => Card.findByIdAndUpdate(
   req.params._id,
   { $addToSet: { likes: req.user._id } },
   { new: true },
 )
-  .orFail(() => new Error('Not_Found'))
-  .then((card) => res.status(DONE_CODE).send({ data: card }))
+  .then((card) => {
+    if (!card) {
+      throw new NotFoundError('Card Not Found');
+    }
+    res.status(DONE_CODE).send({ data: card });
+  })
   .catch((err) => {
     if (err.name === 'CastError') {
-      res.status(BAD_REQUEST_CODE).send({ message: 'Validation Error' });
-    } else if (err.message === 'Not_Found') {
-      res.status(NOT_FOUND_CODE).send({ message: 'Card Not Found' });
-    } else {
-      res.status(GLOBAL_ERROR_SERVER).send({ message: 'Server Error' });
+      return next(new ValidationError('Validation Error'));
     }
+    return next(err);
   });
 
 // Убрать лайк
-const dislikeCard = (req, res) => Card.findByIdAndUpdate(
+const dislikeCard = (req, res, next) => Card.findByIdAndUpdate(
   req.params._id,
   { $pull: { likes: req.user._id } },
   { new: true },
 )
   .orFail(() => new Error('Not_Found'))
-  .then((card) => res.status(DONE_CODE).send({ data: card }))
+  .then((card) => {
+    if (!card) {
+      throw new NotFoundError('Card Not Found');
+    }
+    res.status(DONE_CODE).send({ data: card });
+  })
   .catch((err) => {
     if (err.name === 'CastError') {
-      res.status(BAD_REQUEST_CODE).send({ message: 'Validation Error' });
-    } else if (err.message === 'Not_Found') {
-      res.status(NOT_FOUND_CODE).send({ message: 'Card Not Found' });
-    } else {
-      res.status(GLOBAL_ERROR_SERVER).send({ message: 'Server Error' });
+      return next(new ValidationError('Validation Error'));
     }
+    return next(err);
   });
 
 // Удалить карточку
-const deleteCardById = (req, res) => {
+const deleteCardById = (req, res, next) => {
   const cardId = req.params._id;
   return Card.findByIdAndRemove(cardId)
-    .orFail(() => new Error('Not_Found'))
     .then((card) => {
+      if (!card) {
+        throw new NotFoundError('Card Not Found');
+      }
       if (card.owner.toString() !== req.user._id) {
-        res.status(FORBIDDEN_CODE).send({ message: 'Вы не вправе удалять эту карточку' });
+        throw new ForbiddenError('Вы не имеетек права это удалить');
       }
       res.status(DONE_CODE).send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(BAD_REQUEST_CODE).send({ message: 'Validation Error' });
-      } else if (err.message === 'Not_Found') {
-        res.status(NOT_FOUND_CODE).send({ message: 'Card Not Found' });
-      } else {
-        res.status(GLOBAL_ERROR_SERVER).send({ message: 'Server Error' });
+        return next(new ValidationError('Validation Error'));
       }
+      return next(err);
     });
 };
 
