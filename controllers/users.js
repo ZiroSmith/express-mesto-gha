@@ -7,7 +7,7 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const DuplicateError = require('../errors/DuplicateError');
 const ValidationError = require('../errors/ValidationError');
-const AuthorizationError = require('../errors/ValidationError');
+const AuthorizationError = require('../errors/AuthorizationError');
 
 const DONE_CODE = 200;
 const CREATE_CODE = 201;
