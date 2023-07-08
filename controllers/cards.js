@@ -50,7 +50,6 @@ const dislikeCard = (req, res, next) => Card.findByIdAndUpdate(
   { $pull: { likes: req.user._id } },
   { new: true },
 )
-  .orFail(() => new Error('Not_Found'))
   .then((card) => {
     if (!card) {
       throw new NotFoundError('Card Not Found');

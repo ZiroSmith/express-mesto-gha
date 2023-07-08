@@ -1,5 +1,6 @@
 /* eslint-disable linebreak-style */
 const router = require('express').Router();
+const { celebrate, Joi } = require('celebrate');
 const {
   getUsers, getMyInfo, getUserById, updateUserById, updateUserAvatarById,
 } = require('../controllers/users');
@@ -8,9 +9,18 @@ router.get('/users', getUsers);
 
 router.get('/users/me', getMyInfo);
 
-router.get('/users/:id', getUserById);
+router.get('/users/:id', celebrate({
+  params: Joi.object().keys({
+    userId: Joi.string().required().hex().length(24),
+  }),
+}), getUserById);
 
-router.patch('/users/me', updateUserById);
+router.patch('/users/me', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().required().min(3).max(29),
+    about: Joi.string().required().min(3).max(29),
+  }),
+}), updateUserById);
 
 router.patch('/users/me/avatar', updateUserAvatarById);
 
