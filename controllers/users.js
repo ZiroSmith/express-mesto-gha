@@ -7,6 +7,7 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const DuplicateError = require('../errors/DuplicateError');
 const ValidationError = require('../errors/ValidationError');
+const AuthorizationError = require('../errors/ValidationError');
 
 const DONE_CODE = 200;
 const CREATE_CODE = 201;
@@ -26,7 +27,10 @@ const createUser = (req, res, next) => {
       password: hash,
     }))
     .then((newUser) => {
-      res.status(CREATE_CODE).send(newUser);
+      const { _id } = newUser;
+      res.status(CREATE_CODE).send({
+        _id, email, name, about, avatar,
+      });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -46,7 +50,7 @@ const login = (req, res, next) => {
   return User.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Такого пользователя не существует');
+        throw new AuthorizationError('Такого пользователя не существует');
       }
       bcrypt.compare(password, user.password, (err, isPasswordMatch) => {
         if (!isPasswordMatch) {
