@@ -21,8 +21,8 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(auth);
 app.use(routes);
+app.use(auth);
 
 app.use(errors());
 app.use(errorHandler);
