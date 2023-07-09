@@ -54,7 +54,7 @@ const login = (req, res, next) => {
       }
       bcrypt.compare(password, user.password, (err, isPasswordMatch) => {
         if (!isPasswordMatch) {
-          return next(new ValidationError('Неправильный логин или пароль'));
+          return next(new AuthorizationError('Неправильный логин или пароль'));
         }
         const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
         return res.status(DONE_CODE).send({ token });

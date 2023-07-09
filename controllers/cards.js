@@ -66,22 +66,25 @@ const dislikeCard = (req, res, next) => Card.findByIdAndUpdate(
 // Удалить карточку
 const deleteCardById = (req, res, next) => {
   const cardId = req.params._id;
-  return Card.findByIdAndRemove(cardId)
+  Card.findById(cardId)
     .then((card) => {
       if (!card) {
         throw new NotFoundError('Card Not Found');
       }
       if (card.owner.toString() !== req.user._id) {
-        throw new ForbiddenError('Вы не имеетек права это удалить');
+        throw new ForbiddenError('Вы не имеете права это удалить');
       }
-      res.status(DONE_CODE).send({ data: card });
+      Card
+        .findByIdAndRemove(cardId)
+        .then((user) => res.status(DONE_CODE).send({ data: user }))
+        .catch((err) => {
+          if (err.name === 'CastError') {
+            return next(new ValidationError('Validation Error'));
+          }
+          return next(err);
+        });
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        return next(new ValidationError('Validation Error'));
-      }
-      return next(err);
-    });
+    .catch(next);
 };
 
 module.exports = {

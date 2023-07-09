@@ -1,6 +1,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-undef */
 const jwt = require('jsonwebtoken');
+const AuthorizationError = require('../errors/AuthorizationError');
 
 const JWT_SECRET = 'some-secret-key';
 
@@ -17,7 +18,7 @@ module.exports = (req, res, next) => {
   try {
     payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
-    return res.status(401).send({ message: 'Нет доступа' });
+    return next(new AuthorizationError('Неправильный логин или пароль'));
   }
 
   req.user = payload;
