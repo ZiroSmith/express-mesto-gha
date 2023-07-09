@@ -8,8 +8,8 @@ const { validationSignup, validationSignin } = require('../middlewares/validatio
 
 router.use(userRoutes);
 router.use(cardRoutes);
-router.use('/signup', validationSignup, createUser);
-router.use('/signin', validationSignin, login);
+router.post('/signup', validationSignup, createUser);
+router.post('/signin', validationSignin, login);
 router.use('*', (req, res, next) => {
   next(new NotFoundError('Маршрут не найден'));
 });
