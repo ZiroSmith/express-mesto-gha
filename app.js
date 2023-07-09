@@ -6,8 +6,8 @@ const { errors } = require('celebrate');
 const routes = require('./routes/index');
 const auth = require('./middlewares/auth');
 const errorHandler = require('./middlewares/error-handler');
-const { createUser, login } = require('../controllers/users');
-const { validationSignup, validationSignin } = require('../middlewares/validation');
+const { createUser, login } = require('./controllers/users');
+const { validationSignup, validationSignin } = require('./middlewares/validation');
 
 const { PORT = 3000, DB_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
 
