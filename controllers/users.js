@@ -4,13 +4,11 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const { DONE_CODE, CREATE_CODE } = require('../utils/constans');
 const NotFoundError = require('../errors/NotFoundError');
 const DuplicateError = require('../errors/DuplicateError');
 const ValidationError = require('../errors/ValidationError');
 const AuthorizationError = require('../errors/AuthorizationError');
-
-const DONE_CODE = 200;
-const CREATE_CODE = 201;
 
 // Создать юзера - регистрация:
 const createUser = (req, res, next) => {

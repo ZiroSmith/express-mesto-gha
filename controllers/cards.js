@@ -1,11 +1,9 @@
 /* eslint-disable linebreak-style */
 const Card = require('../models/card');
+const { DONE_CODE, CREATE_CODE } = require('../utils/constans');
 const ValidationError = require('../errors/ValidationError');
 const NotFoundError = require('../errors/NotFoundError');
 const ForbiddenError = require('../errors/ForbiddenError');
-
-const DONE_CODE = 200;
-const CREATE_CODE = 201;
 
 // Найти карточки
 const getCards = (req, res, next) => Card.find({})

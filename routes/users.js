@@ -1,6 +1,7 @@
 /* eslint-disable linebreak-style */
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
+const { REGEX } = require('../utils/constans');
 const {
   getUsers, getMyInfo, getUserById, updateUserById, updateUserAvatarById,
 } = require('../controllers/users');
@@ -25,7 +26,7 @@ router.patch('/users/me', celebrate({
 router.patch('/users/me/avatar', celebrate({
   body: Joi.object().keys({
     // eslint-disable-next-line no-useless-escape
-    avatar: Joi.string().required().pattern(/^(http|https):\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,8}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/),
+    avatar: Joi.string().required().pattern(REGEX),
   }),
 }), updateUserAvatarById);
 
