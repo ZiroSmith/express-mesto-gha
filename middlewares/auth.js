@@ -9,7 +9,7 @@ module.exports = (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    return res.status(401).send({ message: 'Нет доступа' });
+    throw new AuthorizationError('Нет доступа');
   }
 
   const token = authorization.replace('Bearer ', '');
